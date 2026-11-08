@@ -1,0 +1,30 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\AttendanceRecord;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AttendanceBreak>
+ */
+class AttendanceBreakFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    
+    /*固定休憩 12:00-13:00（1 時間）が定義されているため、break_in と break_out は固定値を返すようにしています。*/
+    public function definition(): array
+    {
+        return [
+            'attendance_record_id' => AttendanceRecord::factory(),
+
+            'break_in' => '12:00:00',
+
+            'break_out' => '13:00:00',
+        ];
+    }
+}

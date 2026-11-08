@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AttendanceRecord extends Model
@@ -16,24 +15,17 @@ class AttendanceRecord extends Model
         'date',
         'clock_in',
         'clock_out',
+        'comment',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'clock_in' => 'datetime',
+        'clock_out' => 'datetime',
     ];
 
-    public function user(): BelongsTo
+    public function attendanceBreaks(): HasMany
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function breaks(): HasMany
-    {
-        return $this->hasMany(BreakTime::class);
-    }
-
-    public function applications(): HasMany
-    {
-        return $this->hasMany(Application::class);
+        return $this->hasMany(AttendanceBreak::class);
     }
 }
