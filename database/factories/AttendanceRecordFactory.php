@@ -30,8 +30,6 @@ class AttendanceRecordFactory extends Factory
             'clock_in' => now()->setTime(9, 0),
 
             'clock_out' => now()->setTime(18, 0),
-
-            'comment' => fake()->optional()->sentence(),
         ];
     }
 }
