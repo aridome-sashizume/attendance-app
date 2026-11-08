@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->string('password');
 
-            $table->boolean('is_admin')->default(false);
+            $table->boolean('admin_status')->default(false);
 
             $table->rememberToken();
 
