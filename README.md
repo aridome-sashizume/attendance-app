@@ -84,7 +84,67 @@ Tailwind CSS はすでにプロジェクトに含まれています。
 ```
 
 ## ER図
-- 実装時に追記予定
+```mermaid
+erDiagram
+  users ||--o{ attendance_records : ""
+  users ||--o{ applications : ""
+  attendance_records ||--o{ breaks : ""
+  attendance_records ||--o{ applications : ""
+  applications ||--o{ application_breaks : ""
+
+  users {
+    bigint id PK
+    string name
+    string email UK
+    timestamp email_verified_at
+    string password
+    boolean admin_status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  attendance_records {
+    bigint id PK
+    bigint user_id FK
+    date date
+    time clock_in
+    time clock_out
+    string comment
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  breaks {
+    bigint id PK
+    bigint attendance_record_id FK
+    time break_in
+    time break_out
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  applications {
+    bigint id PK
+    bigint user_id FK
+    bigint attendance_record_id FK
+    time new_clock_in
+    time new_clock_out
+    string comment
+    string approval_status
+    datetime application_date
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  application_breaks {
+    bigint id PK
+    bigint application_id FK
+    time new_break_in
+    time new_break_out
+    timestamp created_at
+    timestamp updated_at
+  }
+```
 
 ## URL
 - アプリ開発環境：http://localhost
