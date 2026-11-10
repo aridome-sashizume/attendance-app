@@ -9,6 +9,12 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
+/**
+ * FN002の使用技術としてFormRequestが指定されているため、
+ * RegisterRequestのバリデーションルールとメッセージを利用する。
+ */
+use App\Http\Requests\RegisterRequest;
+
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
@@ -22,17 +28,17 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique(User::class),
-            ],
-            'password' => $this->passwordRules(),
-        ])->validate();
+
+        /**
+         * FN002 バリデーションの使用技術：formrequestとあるため、を使用するように修正
+         */
+        $request = new RegisterRequest();
+
+        Validator::make(
+            $input,
+            $request->rules(),
+            $request->messages()
+        )->validate();
 
         return User::create([
             'name' => $input['name'],
