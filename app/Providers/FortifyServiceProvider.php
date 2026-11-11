@@ -14,6 +14,13 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
+use App\Http\Requests\LoginRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -54,6 +61,35 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::registerView(function () {
             return view('user.register');
         });
+
+        /*
+        * FN008の使用技術としてFormRequestが指定されているため、
+        * LoginRequestのバリデーションルールとメッセージを利用する。
+        */
+        Fortify::authenticateUsing(function (Request $request) {
+
+            $loginRequest = new LoginRequest();
+
+            Validator::make(
+                $request->all(),
+                $loginRequest->rules(),
+                $loginRequest->messages()
+            )->validate();
+
+            $user = User::where('email', $request->email)->first();
+
+            if (
+                $user &&
+                Hash::check($request->password, $user->password)
+            ) {
+                return $user;
+            }
+
+            throw ValidationException::withMessages([
+                'email' => 'ログイン情報が登録されていません',
+            ]);
+        });
+
 
     }
 }
