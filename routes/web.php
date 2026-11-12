@@ -11,6 +11,8 @@ use App\Http\Controllers\AttendanceListController;
 use App\Http\Controllers\AttendanceDetailController;
 
 USE App\Http\Controllers\ApplicationListController;
+
+use App\Http\Controllers\ApplicationDetailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,18 +43,16 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/attendance/list', [AttendanceListController::class, 'index']);
 
-    Route::get(
-        '/attendance/{attendanceRecord}',
-        [AttendanceDetailController::class, 'show']
+    Route::get('/attendance/{attendanceRecord}',[AttendanceDetailController::class, 'show']
     );
 
-    Route::post(
-        '/attendance/{attendanceRecord}',
-        [AttendanceDetailController::class, 'store']
+    Route::post('/attendance/{attendanceRecord}', [AttendanceDetailController::class, 'store']
     );
 
-    Route::get(
-        '/stamp_correction_request/list',
-        [ApplicationListController::class, 'index']
+    Route::get('/stamp_correction_request/list',[ApplicationListController::class, 'index']
+    );
+
+
+    Route::get('/application/{application}',[ApplicationDetailController::class, 'show']
     );
 });
