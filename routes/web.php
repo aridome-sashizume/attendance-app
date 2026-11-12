@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/list', [AttendanceListController::class, 'index']);
 
 
-    Route::get('/attendance/{attendanceRecord}',[AttendanceDetailController::class, 'show']
-    );
+    Route::get('/attendance/{attendanceRecord}',[AttendanceDetailController::class, 'show']);
+
+    Route::post('/attendance/{attendanceRecord}',[AttendanceDetailController::class, 'store']);
 });
