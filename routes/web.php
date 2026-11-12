@@ -7,6 +7,8 @@ use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AttendanceController;
 
 use App\Http\Controllers\AttendanceListController;
+
+use App\Http\Controllers\AttendanceDetailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,4 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance', [AttendanceController::class, 'store']);
 
     Route::get('/attendance/list', [AttendanceListController::class, 'index']);
+
+
+    Route::get('/attendance/{attendanceRecord}',[AttendanceDetailController::class, 'show']
+    );
 });
