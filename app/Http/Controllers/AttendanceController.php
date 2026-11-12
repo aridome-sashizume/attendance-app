@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\AttendanceRecord;
+use App\Models\AttendanceBreak;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
@@ -15,11 +16,22 @@ class AttendanceController extends Controller
             ->whereDate('date', today())
             ->first();
 
+        // 本日の勤怠レコードに紐づく最新の休憩レコードを取得
+        $latestBreak = $attendance?->attendanceBreaks()
+        ->latest()
+        ->first();
+
         //勤怠レコードの状態から画面表示用ステータスを判定
         if (! $attendance) {
             $attendanceStatus = '勤務外';
         } elseif ($attendance->clock_out) {
             $attendanceStatus = '退勤済';
+        } elseif (
+            $latestBreak &&
+            $latestBreak->break_in &&
+            ! $latestBreak->break_out
+        ) {
+            $attendanceStatus = '休憩中';
         } else {
             $attendanceStatus = '出勤中';
         }
@@ -44,7 +56,7 @@ class AttendanceController extends Controller
 /**
  * 出勤打刻処理
  */
-    public function store()
+    public function store(Request $request)
     {
         // 同日に複数の出勤レコードが作成されないよう、
         // ログインユーザーの当日の勤怠レコード有無を確認する
@@ -52,19 +64,55 @@ class AttendanceController extends Controller
             ->whereDate('date', today())
             ->first();
 
-        // 既に出勤済みの場合は処理を行わず打刻画面へ戻す
-        if ($attendance) {
+            
+        // 出勤
+        if ($request->action === 'clock_in') {
+
+            if ($attendance) {
+                return redirect('/attendance');
+            }
+
+            AttendanceRecord::create([
+                'user_id' => Auth::id(),
+                'date' => now()->toDateString(),
+                'clock_in' => now(),
+            ]);
+
             return redirect('/attendance');
         }
 
-        // 出勤時刻を保存し、その日の勤怠レコードを作成する
-        AttendanceRecord::create([
-            'user_id' => Auth::id(),
-            'date' => now()->toDateString(),
-            'clock_in' => now(),
-        ]);
+        // 休憩入
+        if ($request->action === 'break_in') {
 
-        // 出勤打刻後に勤怠画面へリダイレクトする
+            AttendanceBreak::create([
+                'attendance_record_id' => $attendance->id,
+                'break_in' => now(),
+            ]);
+
+            return redirect('/attendance');
+        }
+
+
+        // 休憩戻
+        if ($request->action === 'break_out') {
+
+            $break = AttendanceBreak::where(
+                'attendance_record_id',
+                $attendance->id
+            )
+                ->whereNull('break_out')
+                ->latest()
+                ->first();
+
+            $break->update([
+                'break_out' => now(),
+            ]);
+
+            return redirect('/attendance');
+        }
+
         return redirect('/attendance');
     }
+
+    
 }
