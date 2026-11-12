@@ -111,6 +111,16 @@ class AttendanceController extends Controller
             return redirect('/attendance');
         }
 
+        // 退勤
+        if ($request->action === 'clock_out') {
+
+            $attendance->update([
+                'clock_out' => now(),
+            ]);
+
+            return redirect('/attendance');
+        }
+
         return redirect('/attendance');
     }
 
