@@ -32,7 +32,7 @@ class AttendanceDetailController extends Controller
 
         return view('user.user-detail', [
             'data' => $data,
-            'user' => auth()->user(),
+            'user' => $attendanceRecord->user,
         ]);
     }
 
