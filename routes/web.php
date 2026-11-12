@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware('auth')->group(function () {
 
-    Route::get('/admin/attendance/list',[AdminAttendanceListController::class, 'index']
-    );
+    Route::get('/admin/attendance/list',[AdminAttendanceListController::class, 'index']);
+
+    Route::post('/admin/attendance/{attendanceRecord}',[AdminAttendanceDetailController::class, 'update']
+);
 });
