@@ -13,6 +13,8 @@ use App\Http\Controllers\AttendanceDetailController;
 USE App\Http\Controllers\ApplicationListController;
 
 use App\Http\Controllers\ApplicationDetailController;
+
+use App\Http\Controllers\AdminAttendanceListController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +39,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/logout', [AdminLoginController::class, 'logout']);
 });
 
+/**
+*  一般ユーザーのログイン後のルート
+*/
 Route::middleware('auth')->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index']);
     Route::post('/attendance', [AttendanceController::class, 'store']);
@@ -54,5 +59,14 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/application/{application}',[ApplicationDetailController::class, 'show']
+    );
+});
+
+/**
+*  管理者のログイン後のルート
+*/
+Route::middleware('auth')->group(function () {
+
+    Route::get('/admin/attendance/list',[AdminAttendanceListController::class, 'index']
     );
 });
