@@ -13,7 +13,7 @@ class AttendanceBreakSeeder extends Seeder
      */
     public function run(): void
     {
-        /* 固定休憩 12:00-13:00（1 時間） を付与*/
+        /* 固定休憩 12:00-13:00（1 時間） を付与 */
         AttendanceRecord::all()->each(function (
             AttendanceRecord $attendanceRecord
         ) {

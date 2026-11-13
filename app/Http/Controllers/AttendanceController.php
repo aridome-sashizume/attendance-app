@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\AttendanceRecord;
-use App\Models\AttendanceBreak;
-use Illuminate\Support\Facades\Auth;
 
+use App\Models\AttendanceBreak;
+use App\Models\AttendanceRecord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
@@ -18,10 +18,10 @@ class AttendanceController extends Controller
 
         // 本日の勤怠レコードに紐づく最新の休憩レコードを取得
         $latestBreak = $attendance?->attendanceBreaks()
-        ->latest()
-        ->first();
+            ->latest()
+            ->first();
 
-        //勤怠レコードの状態から画面表示用ステータスを判定
+        // 勤怠レコードの状態から画面表示用ステータスを判定
         if (! $attendance) {
             $attendanceStatus = '勤務外';
         } elseif ($attendance->clock_out) {
@@ -40,10 +40,10 @@ class AttendanceController extends Controller
          * attendance-register.blade.php では
          * $user->attendance_status を参照しているため、
          * 画面表示用のステータスを動的に付与する。
-        */
+         */
         $user = auth()->user();
         $user->attendance_status = $attendanceStatus;
-        
+
         return view('user.attendance-register', [
             'user' => auth()->user(),
             'attendanceStatus' => $attendanceStatus,
@@ -52,10 +52,9 @@ class AttendanceController extends Controller
         ]);
     }
 
-
-/**
- * 出勤打刻処理
- */
+    /**
+     * 出勤打刻処理
+     */
     public function store(Request $request)
     {
         // 同日に複数の出勤レコードが作成されないよう、
@@ -64,7 +63,6 @@ class AttendanceController extends Controller
             ->whereDate('date', today())
             ->first();
 
-            
         // 出勤
         if ($request->action === 'clock_in') {
 
@@ -91,7 +89,6 @@ class AttendanceController extends Controller
 
             return redirect('/attendance');
         }
-
 
         // 休憩戻
         if ($request->action === 'break_out') {
@@ -123,6 +120,4 @@ class AttendanceController extends Controller
 
         return redirect('/attendance');
     }
-
-    
 }

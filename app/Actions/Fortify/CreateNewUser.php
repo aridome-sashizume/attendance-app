@@ -2,18 +2,16 @@
 
 namespace App\Actions\Fortify;
 
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Contracts\CreatesNewUsers;
-
 /**
  * FN002の使用技術としてFormRequestが指定されているため、
  * RegisterRequestのバリデーションルールとメッセージを利用する。
  */
-use App\Http\Requests\RegisterRequest;
+use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -32,7 +30,7 @@ class CreateNewUser implements CreatesNewUsers
         /**
          * FN002 バリデーションの使用技術：formrequestとあるため、を使用するように修正
          */
-        $request = new RegisterRequest();
+        $request = new RegisterRequest;
 
         Validator::make(
             $input,
