@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\AttendanceRecord;
 use App\Models\User;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 
 class AdminAttendanceListController extends Controller
@@ -49,28 +49,28 @@ class AdminAttendanceListController extends Controller
             ->whereDate('date', $date)
             ->get();
 
-/**
- * 休憩時間・勤務時間計算
- */
-foreach ($attendanceRecords as $attendance) {
+        /**
+         * 休憩時間・勤務時間計算
+         */
+        foreach ($attendanceRecords as $attendance) {
 
-    $totalBreakMinutes = 0;
+            $totalBreakMinutes = 0;
 
-    foreach ($attendance->attendanceBreaks as $break) {
+            foreach ($attendance->attendanceBreaks as $break) {
 
-        if ($break->break_out) {
+                if ($break->break_out) {
 
-            $totalBreakMinutes += Carbon::parse(
-                $break->break_in
-            )->diffInMinutes(
-                Carbon::parse($break->break_out)
-            );
-        }
-    }
+                    $totalBreakMinutes += Carbon::parse(
+                        $break->break_in
+                    )->diffInMinutes(
+                        Carbon::parse($break->break_out)
+                    );
+                }
+            }
 
-    /**
-     * 休憩時間
-     */
+            /**
+             * 休憩時間
+             */
             $attendance->total_break_time = null;
 
             if ($totalBreakMinutes > 0) {
@@ -104,7 +104,6 @@ foreach ($attendanceRecords as $attendance) {
             }
         }
 
-        
         /**
          * 日次勤怠一覧画面表示
          */

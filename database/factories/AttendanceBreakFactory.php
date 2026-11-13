@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\AttendanceBreak;
 use App\Models\AttendanceRecord;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AttendanceBreak>
+ * @extends Factory<AttendanceBreak>
  */
 class AttendanceBreakFactory extends Factory
 {
@@ -15,8 +16,8 @@ class AttendanceBreakFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    
-    /*固定休憩 12:00-13:00（1 時間）が定義されているため、break_in と break_out は固定値を返すようにしています。*/
+
+    /* 固定休憩 12:00-13:00（1 時間）が定義されているため、break_in と break_out は固定値を返すようにしています。 */
     public function definition(): array
     {
         return [

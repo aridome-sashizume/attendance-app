@@ -38,29 +38,25 @@ class ApplicationListController extends Controller
                     /**
                      * 承認ステータス
                      */
-                    'approval_status'
-                        => $application->approval_status,
+                    'approval_status' => $application->approval_status,
 
                     /**
                      * 対象日
                      */
-                    'date'
-                        => Carbon::parse(
-                            $application->new_date
-                        )->format('Y/m/d'),
+                    'date' => Carbon::parse(
+                        $application->new_date
+                    )->format('Y/m/d'),
 
                     /**
                      * 修正理由
                      */
-                    'comment'
-                        => $application->comment,
+                    'comment' => $application->comment,
 
                     /**
                      * 申請日
                      */
-                    'application_date'
-                        => $application->created_at
-                            ->format('Y/m/d'),
+                    'application_date' => $application->created_at
+                        ->format('Y/m/d'),
                 ];
             }
         );
@@ -71,11 +67,9 @@ class ApplicationListController extends Controller
         return view(
             'user.user-application-list',
             [
-                'formattedApplications'
-                    => $formattedApplications,
+                'formattedApplications' => $formattedApplications,
 
-                'user'
-                    => Auth::user(),
+                'user' => Auth::user(),
             ]
         );
     }

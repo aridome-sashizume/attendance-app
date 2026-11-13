@@ -19,8 +19,8 @@ class AttendanceBreak extends Model
     ];
 
     protected $casts = [
-    'break_in' => 'datetime',
-    'break_out' => 'datetime',
+        'break_in' => 'datetime',
+        'break_out' => 'datetime',
     ];
 
     public function attendanceRecord(): BelongsTo

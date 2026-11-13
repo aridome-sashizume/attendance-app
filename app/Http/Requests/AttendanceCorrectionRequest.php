@@ -77,7 +77,7 @@ class AttendanceCorrectionRequest extends FormRequest
                 /**
                  * 空行はスキップ
                  */
-                if (!$breakIn && !$breakOut) {
+                if (! $breakIn && ! $breakOut) {
                     continue;
                 }
 
