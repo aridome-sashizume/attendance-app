@@ -15,6 +15,12 @@ USE App\Http\Controllers\ApplicationListController;
 use App\Http\Controllers\ApplicationDetailController;
 
 use App\Http\Controllers\AdminAttendanceListController;
+
+use App\Http\Controllers\AdminAttendanceDetailController;
+
+use App\Http\Controllers\StaffListController;
+
+use App\Http\Controllers\StaffAttendanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -69,6 +75,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/attendance/list',[AdminAttendanceListController::class, 'index']);
 
-    Route::post('/admin/attendance/{attendanceRecord}',[AdminAttendanceDetailController::class, 'update']
-);
+    Route::post('/admin/attendance/{attendanceRecord}',[AdminAttendanceDetailController::class, 'update']);
+
+    Route::get('/admin/staff/list', [StaffListController::class, 'index'])->name('admin.staff.list');
+
+    Route::get('/admin/attendance/staff/{user}', [StaffAttendanceController::class, 'index'])->name('admin.staff.attendance.index');
 });
