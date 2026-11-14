@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * リクエスト認可判定
+     *
+     * 勤怠修正申請機能の利用を許可する。
      */
     public function authorize(): bool
     {
@@ -16,9 +17,9 @@ class RegisterRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * バリデーションルール定義
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * 勤怠修正申請時の入力チェックルールを定義する。
      */
     public function rules(): array
     {

@@ -9,9 +9,9 @@ use App\Http\Controllers\ApplicationListController;
 use App\Http\Controllers\AttendanceDetailController;
 use App\Http\Controllers\AttendanceListController;
 use App\Http\Controllers\AttendanceRecordController;
+use App\Http\Controllers\AttendanceReportController;
 use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffListController;
-use App\Http\Controllers\AttendanceReportController;
 use Illuminate\Support\Facades\Route;
 
 /*

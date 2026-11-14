@@ -27,6 +27,8 @@ class Application extends Model
 
     /**
      * 申請ユーザー
+     *
+     * 修正申請を行ったユーザー情報を取得する。
      */
     public function user(): BelongsTo
     {
@@ -35,6 +37,8 @@ class Application extends Model
 
     /**
      * 対象勤怠情報
+     *
+     * 修正申請の対象となる勤怠情報を取得する。
      */
     public function attendanceRecord(): BelongsTo
     {

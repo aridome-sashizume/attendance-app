@@ -22,7 +22,9 @@ use Laravel\Fortify\Fortify;
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * サービス登録処理
+     *
+     * アプリケーションで利用するサービスを登録する。
      */
     public function register(): void
     {
@@ -30,7 +32,10 @@ class FortifyServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap any application services.
+     * Fortify 認証設定
+     *
+     * ユーザー登録・ログイン・パスワード更新などの
+     * Fortify認証機能の設定を行う。
      */
     public function boot(): void
     {

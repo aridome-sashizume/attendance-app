@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Application;
 use App\Models\AttendanceBreak;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class AdminApplicationDetailController extends Controller
 {
     /**
      * 修正申請詳細表示
      *
-     * 修正申請時に保存された出退勤時刻・休憩時間を表示する。
-     * application_breaksテーブルの値を、画面側で利用する
-     * break_in / break_out 形式へ変換している。
+     * 修正申請時に保存された出退勤時刻および休憩時間を取得し、
+     * 修正申請詳細画面へ表示する。
+     *
+     * @param  int  $attendance_correct_request_id  修正申請ID
      */
-    public function show($attendance_correct_request_id)
+    public function show(int $attendance_correct_request_id): View
     {
         $application = Application::with([
             'user',
@@ -62,10 +65,11 @@ class AdminApplicationDetailController extends Controller
     /**
      * 修正申請承認処理
      *
-     * 承認時は申請内容を attendance_records および
-     * attendance_breaks に反映し、申請状態を承認済みに更新する。
+     * 承認された修正申請の内容を勤怠情報へ反映し、申請状態を承認済みに更新する。
+     *
+     * @param  int  $attendance_correct_request_id  修正申請ID
      */
-    public function update($attendance_correct_request_id)
+    public function update(int $attendance_correct_request_id): RedirectResponse
     {
         $application = Application::with([
             'attendanceRecord',
@@ -90,16 +94,14 @@ class AdminApplicationDetailController extends Controller
         )->delete();
 
         // 休憩情報を反映
-        foreach ($application->applicationBreaks as $break) {
-
-            AttendanceBreak::create([
-                'attendance_record_id' => $application->attendanceRecord->id,
-
-                'break_in' => $break->new_break_in,
-
-                'break_out' => $break->new_break_out,
-            ]);
-        }
+        $application->applicationBreaks
+            ->each(function ($break) use ($application): void {
+                AttendanceBreak::create([
+                    'attendance_record_id' => $application->attendanceRecord->id,
+                    'break_in' => $break->new_break_in,
+                    'break_out' => $break->new_break_out,
+                ]);
+            });
 
         // 承認済みに更新
         $application->update([

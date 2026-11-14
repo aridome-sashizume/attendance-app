@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceBreak;
 use App\Models\AttendanceRecord;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AttendanceRecordController extends Controller
 {
@@ -15,7 +17,7 @@ class AttendanceRecordController extends Controller
      * 当日の勤怠情報から勤務状態を判定し、
      * 出勤登録画面に必要なデータを表示する。
      */
-    public function index()
+    public function index(): View
     {
         // 本日の勤怠レコードを取得
         $attendance = AttendanceRecord::where('user_id', Auth::id())
@@ -60,8 +62,14 @@ class AttendanceRecordController extends Controller
 
     /**
      * 出勤打刻処理
+     *
+     * ユーザーが出勤ボタンを押下した際に呼び出される。
+     * 当日の勤怠レコードが存在しない場合に出勤時刻
+     * を登録する。
+     *
+     * @param  Request  $request  リクエスト情報
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         // 同日に複数の出勤レコードが作成されないよう、
         // ログインユーザーの当日の勤怠レコード有無を確認する

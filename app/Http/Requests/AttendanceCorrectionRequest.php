@@ -4,11 +4,14 @@ namespace App\Http\Requests;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class AttendanceCorrectionRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * リクエスト認可判定
+     *
+     * 勤怠修正申請機能の利用を許可する。
      */
     public function authorize(): bool
     {
@@ -16,7 +19,9 @@ class AttendanceCorrectionRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * バリデーションルール定義
+     *
+     * 勤怠修正申請時の入力チェックルールを定義する。
      */
     public function rules(): array
     {
@@ -39,10 +44,14 @@ class AttendanceCorrectionRequest extends FormRequest
 
     /**
      * 項目間バリデーション
+     *
+     * ユーザーが入力した出退勤時刻・休憩時間の整合性を検証する。
+     *
+     * @param  Validator  $validator  バリデータ
      */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function (Validator $validator): void {
 
             $clockIn = $this->input('new_clock_in');
             $clockOut = $this->input('new_clock_out');
