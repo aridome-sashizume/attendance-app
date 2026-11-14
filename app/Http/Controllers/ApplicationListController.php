@@ -13,9 +13,26 @@ class ApplicationListController extends Controller
      */
     public function index()
     {
-        /**
-         * ログインユーザーの申請情報取得
-         */
+        // 管理者ユーザー
+        if (Auth::user()->admin_status) {
+
+            $applications = Application::with(
+                    'user',
+                    'attendanceRecord',
+                )
+                ->latest()
+                ->get();
+
+
+            return view(
+                'admin.admin-application-list',
+                [
+                    'applications' => $applications,
+                ]
+            );
+        }
+
+        // 一般ユーザー
         $applications = Application::where(
             'user_id',
             Auth::id()
@@ -23,59 +40,30 @@ class ApplicationListController extends Controller
             ->latest()
             ->get();
 
-        /**
-         * 一覧表示用データ整形
-         */
         $formattedApplications = $applications->map(
             function ($application) {
 
                 return [
-                    /**
-                     * 申請ID
-                     */
                     'id' => $application->id,
-
-                    /**
-                     * 承認ステータス
-                     */
-                    'approval_status'
-                        => $application->approval_status,
-
-                    /**
-                     * 対象日
-                     */
-                    'date'
-                        => Carbon::parse(
-                            $application->new_date
-                        )->format('Y/m/d'),
-
-                    /**
-                     * 修正理由
-                     */
-                    'comment'
-                        => $application->comment,
-
-                    /**
-                     * 申請日
-                     */
-                    'application_date'
-                        => $application->created_at
+                    'approval_status' =>
+                        $application->approval_status,
+                    'date' => Carbon::parse(
+                        $application->new_date
+                    )->format('Y/m/d'),
+                    'comment' => $application->comment,
+                    'application_date' =>
+                        $application->created_at
                             ->format('Y/m/d'),
                 ];
             }
         );
 
-        /**
-         * 申請一覧画面表示
-         */
         return view(
             'user.user-application-list',
             [
                 'formattedApplications'
                     => $formattedApplications,
-
-                'user'
-                    => Auth::user(),
+                'user' => Auth::user(),
             ]
         );
     }
