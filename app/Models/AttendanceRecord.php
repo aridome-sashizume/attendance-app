@@ -26,6 +26,8 @@ class AttendanceRecord extends Model
 
     /**
      * 勤怠情報を登録したユーザー
+     *
+     * この勤怠情報に紐づくユーザー情報を取得する。
      */
     public function user(): BelongsTo
     {
@@ -34,6 +36,8 @@ class AttendanceRecord extends Model
 
     /**
      * 勤怠情報に紐づく休憩情報
+     *
+     * この勤怠情報に登録された休憩情報を取得する。
      */
     public function attendanceBreaks(): HasMany
     {

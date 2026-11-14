@@ -24,7 +24,9 @@ class AttendanceBreak extends Model
     ];
 
     /**
-     * 勤怠情報
+     * 勤怠修正申請情報
+     *
+     * この休憩情報に紐づく勤怠修正申請を取得する。
      */
     public function attendanceRecord(): BelongsTo
     {

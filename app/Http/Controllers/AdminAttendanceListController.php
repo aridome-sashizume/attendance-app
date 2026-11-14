@@ -6,13 +6,18 @@ use App\Models\AttendanceRecord;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AdminAttendanceListController extends Controller
 {
     /**
      * 日次勤怠一覧表示
+     *
+     * 管理者が日次勤怠一覧を表示する。
+     *
+     * @param  Request  $request  リクエスト情報
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         if ($request->filled('date')) {
             $date = Carbon::parse($request->date);
@@ -37,57 +42,66 @@ class AdminAttendanceListController extends Controller
             'attendanceBreaks'
         )
             ->whereDate('date', $date)
-            ->get();
+            ->get()
 
-        /**
-         * 一覧表示用の休憩時間・勤務時間を算出
-         */
-        foreach ($attendanceRecords as $attendance) {
+            // 一覧表示用の休憩時間・勤務時間を算出
+            ->map(function (
+                AttendanceRecord $attendanceRecord
+            ): AttendanceRecord {
 
-            $totalBreakMinutes = 0;
-
-            foreach ($attendance->attendanceBreaks as $break) {
-
-                if ($break->break_out) {
-
-                    $totalBreakMinutes += Carbon::parse(
-                        $break->break_in
-                    )->diffInMinutes(
-                        Carbon::parse($break->break_out)
-                    );
-                }
-            }
-
-            $attendance->total_break_time = null;
-
-            if ($totalBreakMinutes > 0) {
-                $attendance->total_break_time =
-                    Carbon::today()
-                        ->addMinutes($totalBreakMinutes);
-            }
-
-            $attendance->total_time = null;
-
-            if (
-                $attendance->clock_in &&
-                $attendance->clock_out
-            ) {
-
-                $workedMinutes = Carbon::parse(
-                    $attendance->clock_in
-                )->diffInMinutes(
-                    Carbon::parse(
-                        $attendance->clock_out
-                    )
-                );
-
-                $attendance->total_time =
-                    Carbon::today()
-                        ->addMinutes(
-                            $workedMinutes - $totalBreakMinutes
+                // 休憩終了時刻が登録されている休憩のみを対象として
+                // 休憩時間（分）を集計する
+                $totalBreakMinutes = $attendanceRecord->attendanceBreaks
+                    ->filter(function ($break): bool {
+                        return ! is_null($break->break_out);
+                    })
+                    ->sum(function ($break): int {
+                        return Carbon::parse(
+                            $break->break_in
+                        )->diffInMinutes(
+                            Carbon::parse(
+                                $break->break_out
+                            )
                         );
-            }
-        }
+                    });
+
+                // 一覧表示用の合計休憩時間を設定
+                $attendanceRecord->total_break_time = null;
+
+                if ($totalBreakMinutes > 0) {
+                    $attendanceRecord->total_break_time =
+                        Carbon::today()
+                            ->addMinutes(
+                                $totalBreakMinutes
+                            );
+                }
+
+                // 一覧表示用の実働時間を設定
+                $attendanceRecord->total_time = null;
+
+                if (
+                    $attendanceRecord->clock_in &&
+                    $attendanceRecord->clock_out
+                ) {
+                    // 出勤から退勤までの勤務時間を算出
+                    $workedMinutes = Carbon::parse(
+                        $attendanceRecord->clock_in
+                    )->diffInMinutes(
+                        Carbon::parse(
+                            $attendanceRecord->clock_out
+                        )
+                    );
+
+                    // 勤務時間から休憩時間を差し引き実働時間を算出
+                    $attendanceRecord->total_time =
+                        Carbon::today()
+                            ->addMinutes(
+                                $workedMinutes - $totalBreakMinutes
+                            );
+                }
+
+                return $attendanceRecord;
+            });
 
         return view(
             'admin.admin-attendance-list',

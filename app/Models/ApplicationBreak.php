@@ -18,6 +18,8 @@ class ApplicationBreak extends Model
 
     /**
      * 勤怠修正申請情報
+     *
+     * この休憩情報に紐づく勤怠修正申請を取得する。
      */
     public function application(): BelongsTo
     {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AttendanceReportController extends Controller
 {
@@ -11,7 +11,7 @@ class AttendanceReportController extends Controller
      *
      * 勤怠レポート画面に必要なデータを表示する。
      */
-    public function index()
+    public function index(): View
     {
         return view('reports.index', [
             'summary' => [
