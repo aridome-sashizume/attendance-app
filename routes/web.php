@@ -11,6 +11,7 @@ use App\Http\Controllers\AttendanceListController;
 use App\Http\Controllers\AttendanceRecordController;
 use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffListController;
+use App\Http\Controllers\AttendanceReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +39,8 @@ Route::prefix('admin')->group(function () {
  *  一般ユーザーのログイン後のルート
  */
 Route::middleware('auth')->group(function () {
+    Route::get('/attendance/report', [AttendanceReportController::class, 'index'])->name('attendance.report');
+
     Route::get('/attendance', [AttendanceRecordController::class, 'index']);
     Route::post('/attendance', [AttendanceRecordController::class, 'store']);
 
