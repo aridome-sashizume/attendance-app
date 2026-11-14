@@ -25,16 +25,25 @@ class Application extends Model
         'new_date' => 'date',
     ];
 
+    /**
+     * 申請ユーザー
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * 対象勤怠情報
+     */
     public function attendanceRecord(): BelongsTo
     {
         return $this->belongsTo(AttendanceRecord::class);
     }
 
+    /**
+     * 修正申請の休憩情報
+     */
     public function applicationBreaks(): HasMany
     {
         return $this->hasMany(ApplicationBreak::class);

@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\AttendanceRecord;    
+
+use App\Models\AttendanceRecord;
 use Illuminate\Http\Request;
 
 class AdminAttendanceDetailController extends Controller
 {
-    // 
+    /**
+     * 管理者による勤怠詳細更新処理
+     */
     public function update(Request $request, $attendanceRecordId)
     {
         // 勤怠レコードを取得
