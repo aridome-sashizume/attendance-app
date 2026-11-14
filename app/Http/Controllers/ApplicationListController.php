@@ -17,12 +17,11 @@ class ApplicationListController extends Controller
         if (Auth::user()->admin_status) {
 
             $applications = Application::with(
-                    'user',
-                    'attendanceRecord',
-                )
+                'user',
+                'attendanceRecord',
+            )
                 ->latest()
                 ->get();
-
 
             return view(
                 'admin.admin-application-list',
@@ -45,15 +44,13 @@ class ApplicationListController extends Controller
 
                 return [
                     'id' => $application->id,
-                    'approval_status' =>
-                        $application->approval_status,
+                    'approval_status' => $application->approval_status,
                     'date' => Carbon::parse(
                         $application->new_date
                     )->format('Y/m/d'),
                     'comment' => $application->comment,
-                    'application_date' =>
-                        $application->created_at
-                            ->format('Y/m/d'),
+                    'application_date' => $application->created_at
+                        ->format('Y/m/d'),
                 ];
             }
         );
@@ -61,8 +58,7 @@ class ApplicationListController extends Controller
         return view(
             'user.user-application-list',
             [
-                'formattedApplications'
-                    => $formattedApplications,
+                'formattedApplications' => $formattedApplications,
                 'user' => Auth::user(),
             ]
         );

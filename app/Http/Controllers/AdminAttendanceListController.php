@@ -1,87 +1,71 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\AttendanceRecord;
 use App\Models\User;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 
 class AdminAttendanceListController extends Controller
 {
-    //
+    /**
+     * 日次勤怠一覧表示
+     */
     public function index(Request $request)
     {
-        /**
-         * 表示日付取得
-         */
         if ($request->filled('date')) {
             $date = Carbon::parse($request->date);
         } else {
             $date = Carbon::today();
         }
 
-        /**
-         * 前日
-         */
         $previousDay = $date
             ->copy()
             ->subDay()
             ->format('Y-m-d');
 
-        /**
-         * 翌日
-         */
         $nextDay = $date
             ->copy()
             ->addDay()
             ->format('Y-m-d');
 
-        /**
-         * 全ユーザー取得
-         */
         $users = User::all();
 
-        /**
-         * 指定日の勤怠取得
-         */
-        $attendanceRecords = AttendanceRecord::with('user', 'attendanceBreaks')
+        $attendanceRecords = AttendanceRecord::with(
+            'user',
+            'attendanceBreaks'
+        )
             ->whereDate('date', $date)
             ->get();
 
-/**
- * 休憩時間・勤務時間計算
- */
-foreach ($attendanceRecords as $attendance) {
+        /**
+         * 一覧表示用の休憩時間・勤務時間を算出
+         */
+        foreach ($attendanceRecords as $attendance) {
 
-    $totalBreakMinutes = 0;
+            $totalBreakMinutes = 0;
 
-    foreach ($attendance->attendanceBreaks as $break) {
+            foreach ($attendance->attendanceBreaks as $break) {
 
-        if ($break->break_out) {
+                if ($break->break_out) {
 
-            $totalBreakMinutes += Carbon::parse(
-                $break->break_in
-            )->diffInMinutes(
-                Carbon::parse($break->break_out)
-            );
-        }
-    }
+                    $totalBreakMinutes += Carbon::parse(
+                        $break->break_in
+                    )->diffInMinutes(
+                        Carbon::parse($break->break_out)
+                    );
+                }
+            }
 
-    /**
-     * 休憩時間
-     */
             $attendance->total_break_time = null;
 
             if ($totalBreakMinutes > 0) {
-
-                $attendance->total_break_time = Carbon::today()
-                    ->addMinutes($totalBreakMinutes);
+                $attendance->total_break_time =
+                    Carbon::today()
+                        ->addMinutes($totalBreakMinutes);
             }
 
-            /**
-             * 勤務時間
-             */
             $attendance->total_time = null;
 
             if (
@@ -97,17 +81,14 @@ foreach ($attendanceRecords as $attendance) {
                     )
                 );
 
-                $attendance->total_time = Carbon::today()
-                    ->addMinutes(
-                        $workedMinutes - $totalBreakMinutes
-                    );
+                $attendance->total_time =
+                    Carbon::today()
+                        ->addMinutes(
+                            $workedMinutes - $totalBreakMinutes
+                        );
             }
         }
 
-        
-        /**
-         * 日次勤怠一覧画面表示
-         */
         return view(
             'admin.admin-attendance-list',
             [

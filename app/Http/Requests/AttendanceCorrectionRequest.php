@@ -58,7 +58,7 @@ class AttendanceCorrectionRequest extends FormRequest
             );
 
             /**
-             * 出勤時間 > 退勤時間
+             * 出勤時間 >= 退勤時間
              */
             if ($clockInTime->gte($clockOutTime)) {
                 $validator->errors()->add(
@@ -77,7 +77,7 @@ class AttendanceCorrectionRequest extends FormRequest
                 /**
                  * 空行はスキップ
                  */
-                if (!$breakIn && !$breakOut) {
+                if (! $breakIn && ! $breakOut) {
                     continue;
                 }
 
@@ -115,6 +115,26 @@ class AttendanceCorrectionRequest extends FormRequest
                         'H:i',
                         $breakOut
                     );
+
+                    /**
+                     * 休憩終了が出勤より前
+                     */
+                    if ($breakOutTime->lt($clockInTime)) {
+                        $validator->errors()->add(
+                            "new_break_out.$index",
+                            '休憩時間が不適切な値です'
+                        );
+                    }
+
+                    /**
+                     * 休憩終了が休憩開始以前
+                     */
+                    if ($breakOutTime->lte($breakInTime)) {
+                        $validator->errors()->add(
+                            "new_break_out.$index",
+                            '休憩時間が不適切な値です'
+                        );
+                    }
 
                     /**
                      * 休憩終了が退勤より後

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 
 class StaffListController extends Controller
 {
-    //
+    /**
+     * スタッフ一覧画面表示
+     */
     public function index()
     {
         $users = User::all();

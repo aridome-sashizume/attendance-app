@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AttendanceRecord;
 use App\Http\Requests\AttendanceCorrectionRequest;
-
 use App\Models\Application;
 use App\Models\ApplicationBreak;
+use App\Models\AttendanceRecord;
 
 class AttendanceDetailController extends Controller
 {
+    /**
+     * 勤怠詳細画面表示
+     */
     public function show(AttendanceRecord $attendanceRecord)
     {
         $attendanceRecord->load('attendanceBreaks');
@@ -36,37 +38,39 @@ class AttendanceDetailController extends Controller
         ]);
     }
 
-
+    /**
+     * 勤怠修正申請登録
+     */
     public function store(AttendanceCorrectionRequest $request, AttendanceRecord $attendanceRecord)
     {
-        {
-            $application = Application::create([
-                'user_id' => auth()->id(),
-                'attendance_record_id' => $attendanceRecord->id,
-                'new_date' => $attendanceRecord->date,
-                'new_clock_in' => $request->new_clock_in,
-                'new_clock_out' => $request->new_clock_out,
-                'comment' => $request->comment,
-                'approval_status' => '承認待ち',
-            ]);
 
-            foreach ($request->new_break_in as $index => $breakIn) {
+        $application = Application::create([
+            'user_id' => auth()->id(),
+            'attendance_record_id' => $attendanceRecord->id,
+            'new_date' => $attendanceRecord->date,
+            'new_clock_in' => $request->new_clock_in,
+            'new_clock_out' => $request->new_clock_out,
+            'comment' => $request->comment,
+            'approval_status' => '承認待ち',
+        ]);
 
-                $breakOut = $request->new_break_out[$index] ?? null;
+        foreach ($request->new_break_in as $index => $breakIn) {
 
-                // 両方空欄なら保存しない
-                if (!$breakIn && !$breakOut) {
-                    continue;
-                }
+            $breakOut = $request->new_break_out[$index] ?? null;
 
-                ApplicationBreak::create([
-                    'application_id' => $application->id,
-                    'new_break_in' => $breakIn,
-                    'new_break_out' => $breakOut,
-                ]);
+            // 両方空欄なら保存しない
+            if (! $breakIn && ! $breakOut) {
+                continue;
             }
 
-            return redirect('/attendance/list');
+            ApplicationBreak::create([
+                'application_id' => $application->id,
+                'new_break_in' => $breakIn,
+                'new_break_out' => $breakOut,
+            ]);
         }
+
+        return redirect('/attendance/list');
+
     }
 }

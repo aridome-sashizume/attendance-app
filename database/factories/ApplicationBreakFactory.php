@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Application;
+use App\Models\ApplicationBreak;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ApplicationBreak>
+ * @extends Factory<ApplicationBreak>
  */
 class ApplicationBreakFactory extends Factory
 {
