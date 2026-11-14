@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
-class AttendanceController extends Controller
+class AttendanceRecordController extends Controller
 {
     public function index()
     {

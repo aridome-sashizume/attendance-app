@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminLoginController;
 
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceRecordController;
 
 use App\Http\Controllers\AttendanceListController;
 
@@ -51,8 +51,8 @@ Route::prefix('admin')->group(function () {
 *  一般ユーザーのログイン後のルート
 */
 Route::middleware('auth')->group(function () {
-    Route::get('/attendance', [AttendanceController::class, 'index']);
-    Route::post('/attendance', [AttendanceController::class, 'store']);
+    Route::get('/attendance', [AttendanceRecordController::class, 'index']);
+    Route::post('/attendance', [AttendanceRecordController::class, 'store']);
 
     Route::get('/attendance/list', [AttendanceListController::class, 'index']);
 
