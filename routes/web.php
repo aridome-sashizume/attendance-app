@@ -83,6 +83,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/attendance/staff/{user}', [StaffAttendanceController::class, 'index'])->name('admin.staff.attendance.index');
 
-    Route::get('/stamp_correction_request/approve/{application}',[AdminApplicationDetailController::class, 'show']
+    Route::get('/stamp_correction_request/approve/{application}',[AdminApplicationDetailController::class, 'show']);
+
+    Route::post('/stamp_correction_request/approve/{application}',[AdminApplicationDetailController::class, 'update']
 );
 });
