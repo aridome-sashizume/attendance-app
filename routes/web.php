@@ -22,7 +22,7 @@ use App\Http\Controllers\StaffListController;
 
 use App\Http\Controllers\StaffAttendanceController;
 
-use App\Http\Controllers\AdminApplicationListController;
+use App\Http\Controllers\AdminApplicationDetailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -82,4 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/staff/list', [StaffListController::class, 'index'])->name('admin.staff.list');
 
     Route::get('/admin/attendance/staff/{user}', [StaffAttendanceController::class, 'index'])->name('admin.staff.attendance.index');
+
+    Route::get('/stamp_correction_request/approve/{application}',[AdminApplicationDetailController::class, 'show']
+);
 });
