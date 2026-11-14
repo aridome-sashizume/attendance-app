@@ -21,6 +21,8 @@ use App\Http\Controllers\AdminAttendanceDetailController;
 use App\Http\Controllers\StaffListController;
 
 use App\Http\Controllers\StaffAttendanceController;
+
+use App\Http\Controllers\AdminApplicationListController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
