@@ -10,6 +10,8 @@ class RegisterRequest extends FormRequest
      * リクエスト認可判定
      *
      * 勤怠修正申請機能の利用を許可する。
+     * 
+     *  @return bool
      */
     public function authorize(): bool
     {
@@ -20,6 +22,8 @@ class RegisterRequest extends FormRequest
      * バリデーションルール定義
      *
      * 勤怠修正申請時の入力チェックルールを定義する。
+     * 
+     * @return array
      */
     public function rules(): array
     {
@@ -30,6 +34,13 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    /**
+     * バリデーションエラーメッセージ定義
+     * 
+     * バリデーションエラー時に表示するメッセージを定義する。
+     * 
+     * @return array{"email.email": string, "email.required": string, "email.unique": string, "name.required": string, "password.confirmed": string, "password.min": string, "password.required": string}
+     */
     public function messages(): array
     {
         return [

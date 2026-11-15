@@ -14,6 +14,7 @@ class ApplicationDetailController extends Controller
      * 申請詳細画面に表示する。
      *
      * @param  Application  $application  申請情報
+     * @return View
      */
     public function show(Application $application): View
     {

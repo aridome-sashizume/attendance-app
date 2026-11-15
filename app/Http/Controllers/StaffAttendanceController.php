@@ -2,78 +2,121 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceRecord;
 use App\Models\User;
-use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
+use Illuminate\View\View;
+
+/**
+ * スタッフ勤怠一覧画面表示
+ * 
+ * 管理者が選択したスタッフの勤怠一覧を取得し、
+ * スタッフ勤怠一覧画面に表示する。
+ * 
+ * @return View
+*/
 class StaffAttendanceController extends Controller
 {
-    /**
-     * スタッフ勤怠一覧画面表示
-     *
-     * 管理者が選択したスタッフの勤怠情報を取得し、
-     * スタッフ勤怠一覧画面に表示する。
-     *
-     * @param  User  $user  スタッフ情報
-     */
-    public function index(User $user): View
+    public function index(User $user, Request $request):View
     {
+        // 表示対象月取得
+        $date = Carbon::parse(
+            $request->input('date', now()->format('Y-m'))
+        );
+
+        // 指定スタッフの勤怠一覧取得（Eager Loading）
+        $attendanceRecords = AttendanceRecord::with('attendanceBreaks')
+            ->where('user_id', $user->id)
+            ->whereYear('date', $date->year)
+            ->whereMonth('date', $date->month)
+            ->orderBy('date')
+            ->get();
+
+        // Blade表示用データ作成
+        $formattedAttendanceRecords = $attendanceRecords->map(function ($attendance) {
+
+            // 休憩時間合計（分）
+            $totalBreakMinutes = $attendance->attendanceBreaks
+            ->sum(function ($break): int {
+                if (! $break->break_in || ! $break->break_out) {
+                    return 0;
+                }
+
+                return Carbon::parse($break->break_in)
+                    ->diffInMinutes(
+                        Carbon::parse($break->break_out)
+                    );
+            });
+
+            // 出勤時刻
+            $clockIn = '';
+
+            if ($attendance->clock_in) {
+                $clockIn = Carbon::parse(
+                    $attendance->clock_in
+                )->format('H:i');
+            }
+
+            // 退勤時刻
+            $clockOut = '';
+
+            if ($attendance->clock_out) {
+                $clockOut = Carbon::parse(
+                    $attendance->clock_out
+                )->format('H:i');
+            }
+
+            // 休憩時間
+            $totalBreakTime = null;
+
+            if ($totalBreakMinutes > 0) {
+                $totalBreakTime = Carbon::today()
+                    ->addMinutes($totalBreakMinutes);
+            }
+
+            // 勤務時間
+            $totalWorkTime = null;
+
+            if ($attendance->clock_in && $attendance->clock_out) {
+
+                $workedMinutes = Carbon::parse(
+                    $attendance->clock_in
+                )->diffInMinutes(
+                    Carbon::parse($attendance->clock_out)
+                );
+
+                $totalWorkMinutes =
+                    $workedMinutes - $totalBreakMinutes;
+
+                $totalWorkTime = Carbon::today()
+                    ->addMinutes($totalWorkMinutes);
+            }
+
+            return [
+                'id' => $attendance->id,
+
+                'date' => Carbon::parse(
+                    $attendance->date
+                )->format('m/d'),
+
+                'clock_in' => $clockIn,
+
+                'clock_out' => $clockOut,
+
+                'total_break_time' => $totalBreakTime,
+
+                'total_time' => $totalWorkTime,
+            ];
+        });
+
         return view('admin.staff-attendance-list', [
             'user' => $user,
-            'date' => now(),
-            'previousMonth' => now()->copy()->subMonth()->format('Y-m'),
-            'nextMonth' => now()->copy()->addMonth()->format('Y-m'),
-            'formattedAttendanceRecords' => [],
+            'formattedAttendanceRecords' => $formattedAttendanceRecords,
+            'date' => $date,
+            'previousMonth' => $date->copy()->subMonth()->format('Y-m'),
+            'nextMonth' => $date->copy()->addMonth()->format('Y-m'),
         ]);
-    }
-
-    /**
-     * スタッフ勤怠情報をCSVで出力
-     * 
-     * 管理者が選択したスタッフの勤怠情報を取得し、
-     * CSVに出力する。
-     * 
-     * @param User $user
-     * @return StreamedResponse
-     */
-    public function exportCsv(User $user): StreamedResponse
-    {
-        $fileName = 'attendance_records_' .
-            $user->id .
-            '_' .
-            now()->format('Ymd_His') .
-            '.csv';
-
-        return response()->streamDownload(
-            function () use ($user): void {
-                $handle = fopen('php://output', 'w');
-
-                fputcsv($handle, [
-                    '日付',
-                    '出勤時刻',
-                    '退勤時刻',
-                ]);
-
-                $user->attendanceRecords
-                    ->each(function ($record) use ($handle): void {
-                        fputcsv($handle, [
-                            optional($record->date)
-                                ?->format('Y-m-d'),
-
-                            optional($record->clock_in)
-                                ?->format('H:i'),
-
-                            optional($record->clock_out)
-                                ?->format('H:i'),
-                        ]);
-                    });
-
-                fclose($handle);
-            },
-            $fileName,
-            [
-                'Content-Type' => 'text/csv',
-            ]
-        );
     }
 }
