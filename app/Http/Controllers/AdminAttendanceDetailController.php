@@ -15,6 +15,7 @@ class AdminAttendanceDetailController extends Controller
      *
      * @param  Request  $request  リクエスト情報
      * @param  int  $attendanceRecordId  勤怠ID
+     * @Return RedirectResponse
      */
     public function update(Request $request, int $attendanceRecordId): RedirectResponse
     {

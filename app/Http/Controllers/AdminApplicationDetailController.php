@@ -17,6 +17,7 @@ class AdminApplicationDetailController extends Controller
      * 修正申請詳細画面へ表示する。
      *
      * @param  int  $attendance_correct_request_id  修正申請ID
+     * @Returun View
      */
     public function show(int $attendance_correct_request_id): View
     {
