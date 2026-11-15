@@ -38,7 +38,7 @@ Route::prefix('admin')->group(function () {
 /**
  *  一般ユーザーのログイン後のルート
  */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/report', [AttendanceReportController::class, 'index'])->name('attendance.report');
 
     Route::get('/attendance', [AttendanceRecordController::class, 'index']);
