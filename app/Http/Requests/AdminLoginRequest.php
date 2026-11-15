@@ -10,8 +10,6 @@ class AdminLoginRequest extends FormRequest
      * リクエスト認可判定
      *
      * 勤怠修正申請機能の利用を許可する。
-     * 
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -22,8 +20,6 @@ class AdminLoginRequest extends FormRequest
      * バリデーションルール定義
      *
      * 勤怠修正申請時の入力チェックルールを定義する。
-     * 
-     * @return array
      */
     public function rules(): array
     {

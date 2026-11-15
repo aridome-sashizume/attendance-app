@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApplicationDetailController::class, 'show']);
 
-    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApplicationDetailController::class, 'update'] );
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApplicationDetailController::class, 'update']);
 
     Route::post('/export', [StaffAttendanceController::class, 'exportCsv']);
 });

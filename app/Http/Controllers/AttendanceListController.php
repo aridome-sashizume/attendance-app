@@ -17,7 +17,6 @@ class AttendanceListController extends Controller
      * 勤怠一覧画面に表示する。
      *
      * @param  Request  $request  リクエスト情報
-     * @return View
      */
     public function index(Request $request): View
     {
