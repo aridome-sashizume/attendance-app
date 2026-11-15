@@ -9,16 +9,19 @@ use Illuminate\Http\Request;
 
 use Illuminate\View\View;
 
-/**
- * スタッフ勤怠一覧画面表示
- * 
- * 管理者が選択したスタッフの勤怠一覧を取得し、
- * スタッフ勤怠一覧画面に表示する。
- * 
- * @return View
-*/
+
 class StaffAttendanceController extends Controller
 {
+    /**
+     * スタッフ勤怠一覧画面表示
+     * 
+     * 管理者が選択したスタッフの勤怠一覧を取得し、
+     * スタッフ勤怠一覧画面に表示する。
+     * 
+     * @param  User  $user  選択スタッフのユーザー情報
+     * @param  Request  $request  リクエスト情報
+     * @return View
+    */
     public function index(User $user, Request $request):View
     {
         // 表示対象月取得
