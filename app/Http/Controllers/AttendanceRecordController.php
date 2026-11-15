@@ -16,8 +16,6 @@ class AttendanceRecordController extends Controller
      *
      * 当日の勤怠情報から勤務状態を判定し、
      * 出勤登録画面に必要なデータを表示する。
-     * 
-     * @return View
      */
     public function index(): View
     {
@@ -70,7 +68,6 @@ class AttendanceRecordController extends Controller
      * を登録する。
      *
      * @param  Request  $request  リクエスト情報
-     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {

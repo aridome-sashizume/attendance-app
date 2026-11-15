@@ -65,7 +65,6 @@ class FortifyServiceProvider extends ServiceProvider
             return view('user.register');
         });
 
-
         // パスワードリセットメール送信画面の設定
         Fortify::verifyEmailView(function () {
             return view('auth.verify-email');

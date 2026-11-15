@@ -16,6 +16,7 @@ class AdminAttendanceListController extends Controller
      * 管理者が日次勤怠一覧を表示する。
      *
      * @param  Request  $request  リクエスト情報
+     *
      * @Retrun View
      */
     public function index(Request $request): View
