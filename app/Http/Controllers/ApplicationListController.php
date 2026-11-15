@@ -13,6 +13,8 @@ class ApplicationListController extends Controller
      * 申請一覧画面表示
      * 管理者は全ユーザーの修正申請一覧、
      * 一般ユーザーは自身の修正申請一覧を表示する。
+     * 
+     * @return View
      */
     public function index(): View
     {

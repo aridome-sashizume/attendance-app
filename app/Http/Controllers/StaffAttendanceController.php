@@ -19,6 +19,7 @@ class StaffAttendanceController extends Controller
      *
      * @param  User  $user  選択スタッフのユーザー情報
      * @param  Request  $request  リクエスト情報
+     * @return View
      */
     public function index(User $user, Request $request): View
     {
@@ -128,6 +129,7 @@ class StaffAttendanceController extends Controller
      * CSVファイルとして出力する。
      *
      * @param  Request  $request  リクエスト情報
+     * @return StreamedResponse
      */
     public function exportCsv(
         Request $request

@@ -10,6 +10,8 @@ class AttendanceReportController extends Controller
      * 勤怠レポート画面表示
      *
      * 勤怠レポート画面に必要なデータを表示する。
+     * 
+     * @return View
      */
     public function index(): View
     {

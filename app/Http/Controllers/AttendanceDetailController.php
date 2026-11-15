@@ -18,8 +18,7 @@ class AttendanceDetailController extends Controller
      * 勤怠詳細画面に表示する。
      *
      * @param  AttendanceRecord  $attendanceRecord  勤怠情報
-     *
-     * @Return View
+     * @return View
      */
     public function show(
         AttendanceRecord $attendanceRecord
@@ -71,6 +70,7 @@ class AttendanceDetailController extends Controller
      *
      * @param  AttendanceCorrectionRequest  $request  リクエスト情報
      * @param  AttendanceRecord  $attendanceRecord  勤怠情報
+     * @return RedirectResponse
      */
     public function store(AttendanceCorrectionRequest $request, AttendanceRecord $attendanceRecord): RedirectResponse
     {
