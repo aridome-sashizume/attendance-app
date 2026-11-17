@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/attendance/list', [AdminAttendanceListController::class, 'index']);
 
+    Route::get('/admin/attendance/{attendanceRecord}', [AdminAttendanceDetailController::class, 'show']);
+
     Route::post('/admin/attendance/{attendanceRecord}', [AdminAttendanceDetailController::class, 'update']);
 
     Route::get('/admin/staff/list', [StaffListController::class, 'index'])->name('admin.staff.list');
