@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\IndexAttendanceRecordRequest;
+use App\Http\Requests\Api\V1\StoreAttendanceRecordRequest;
 use App\Http\Resources\AttendanceRecordResource;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -27,7 +28,6 @@ class AttendanceApiController extends Controller
         IndexAttendanceRecordRequest $request
     ): AnonymousResourceCollection {
 
-        abort(500, 'controller reached');
         // 1ページあたりの取得件数（指定がない場合は20件）
         $perPage = $request->integer(
             'per_page', 20
@@ -102,6 +102,37 @@ class AttendanceApiController extends Controller
             'attendanceBreaks',
             'applications',
         ]);
+
+        // Resource形式で返却
+        return new AttendanceRecordResource(
+            $attendanceRecord
+        );
+    }
+
+    /**
+     * 勤怠登録API
+     *
+     * 認証済みユーザーの勤怠情報を登録する。
+     *
+     * バリデーション済みのデータを利用して
+     * 勤怠情報を作成する。
+     */
+    /**
+     * 勤怠登録API
+     *
+     * リクエストで受け取った勤怠情報を登録する。
+     *
+     * FormRequestでバリデーション済みのデータを利用して
+     * 勤怠レコードを作成し、登録結果を返却する。
+     */
+    public function store(
+        StoreAttendanceRecordRequest $request
+    ): AttendanceRecordResource {
+
+        // 勤怠情報を登録
+        $attendanceRecord = AttendanceRecord::create(
+            $request->validated()
+        );
 
         // Resource形式で返却
         return new AttendanceRecordResource(

@@ -24,4 +24,10 @@ Route::prefix('v1')->group(function (): void {
     Route::get('/attendance-records', [AttendanceApiController::class, 'index']);
 
     Route::get('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'show']);
+
+    // 　Sanctumでの認証
+    // Route::middleware('auth:sanctum')->group(function (): void {
+
+    Route::post('/attendance-records', [AttendanceApiController::class, 'store']);
+    //    });
 });
