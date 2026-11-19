@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class IndexAttendanceRecordRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * リクエストの認可判定
      */
     public function authorize(): bool
     {
@@ -16,7 +16,14 @@ class IndexAttendanceRecordRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * 勤怠一覧取得時のバリデーションルール
+     *
+     * 検証項目
+     * - user_id
+     * - date
+     * - month
+     * - page
+     * - per_page
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
