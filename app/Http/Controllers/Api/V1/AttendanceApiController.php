@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\IndexAttendanceRecordRequest;
 use App\Http\Requests\Api\V1\StoreAttendanceRecordRequest;
+use App\Http\Requests\Api\V1\UpdateAttendanceRecordRequest;
 use App\Http\Resources\AttendanceRecordResource;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -133,6 +134,41 @@ class AttendanceApiController extends Controller
         $attendanceRecord = AttendanceRecord::create(
             $request->validated()
         );
+
+        // Resource形式で返却
+        return new AttendanceRecordResource(
+            $attendanceRecord
+        );
+    }
+
+    /**
+     * 勤怠更新API
+     *
+     * 指定された勤怠情報を更新する。
+     * 更新APIは部分更新に対応しており、
+     * リクエストで送信された項目のみ更新する。
+     */
+    public function update(
+        UpdateAttendanceRecordRequest $request,
+        AttendanceRecord $attendanceRecord
+    ): AttendanceRecordResource {
+
+        // AttendanceRecordPolicy実装後に有効化
+        // $this->authorize(
+        //     'update',
+        //     $attendanceRecord
+        // );
+
+        // 勤怠情報を更新
+        $attendanceRecord->update(
+            $request->validated()
+        );
+
+        // 関連データを読み込み
+        $attendanceRecord->load([
+            'user',
+            'attendanceBreaks',
+        ]);
 
         // Resource形式で返却
         return new AttendanceRecordResource(
