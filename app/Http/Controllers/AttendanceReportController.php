@@ -203,6 +203,70 @@ class AttendanceReportController extends Controller
             }
         );
 
+        // 今月の勤怠データを取得
+        $currentMonthRecords = $attendanceRecords->filter(
+            fn (AttendanceRecord $attendanceRecord): bool => $attendanceRecord->date->format('Y-m') === now()->format('Y-m')
+        );
+
+        // 遅刻回数
+        $lateCount = $currentMonthRecords
+            ->filter(
+                fn (AttendanceRecord $attendanceRecord): bool => $attendanceRecord->clock_in !== null &&
+                    $attendanceRecord->clock_in->format('H:i') > '09:00'
+            )
+            ->count();
+
+        // 早退回数
+        $earlyLeaveCount = $currentMonthRecords
+            ->filter(
+                fn (AttendanceRecord $attendanceRecord): bool => $attendanceRecord->clock_out !== null &&
+                    $attendanceRecord->clock_out->format('H:i') < '18:00'
+            )
+            ->count();
+
+        // 長時間労働回数
+        $longWorkCount = $currentMonthRecords
+            ->filter(
+                function (
+                    AttendanceRecord $attendanceRecord
+                ): bool {
+
+                    if (
+                        $attendanceRecord->clock_in === null ||
+                        $attendanceRecord->clock_out === null
+                    ) {
+                        return false;
+                    }
+
+                    $workMinutes =
+                        $attendanceRecord->clock_in
+                            ->diffInMinutes(
+                                $attendanceRecord->clock_out
+                            );
+
+                    $breakMinutes =
+                        $attendanceRecord->attendanceBreaks
+                            ->sum(function ($break): int {
+                                if (
+                                    $break->break_in === null ||
+                                    $break->break_out === null
+                                ) {
+                                    return 0;
+                                }
+
+                                return $break->break_in
+                                    ->diffInMinutes(
+                                        $break->break_out
+                                    );
+                            });
+
+                    return (
+                        $workMinutes - $breakMinutes
+                    ) > 600;
+                }
+            )
+            ->count();
+
         return view('reports.index', [
             'summary' => [
                 'total_work_minutes' => $totalWorkMinutes,
@@ -211,9 +275,9 @@ class AttendanceReportController extends Controller
             ],
             'monthlyTrend' => $monthlyTrend,
             'anomalies' => [
-                'late_count' => 0,
-                'early_leave_count' => 0,
-                'long_work_count' => 0,
+                'late_count' => $lateCount,
+                'early_leave_count' => $earlyLeaveCount,
+                'long_work_count' => $longWorkCount,
             ],
         ]);
     }
