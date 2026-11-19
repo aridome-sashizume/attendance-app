@@ -12,8 +12,6 @@ class StaffListController extends Controller
      *
      * 管理者が全スタッフの情報を取得し、
      * スタッフ一覧画面に表示する。
-     * 
-     * @return View
      */
     public function index(): View
     {

@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AttendanceCorrectionRequest;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-
-use App\Http\Requests\AttendanceCorrectionRequest;
-
 use Illuminate\View\View;
 
 class AdminAttendanceDetailController extends Controller
@@ -19,7 +16,6 @@ class AdminAttendanceDetailController extends Controller
      * 勤怠詳細画面に表示する。
      *
      * @param  AttendanceRecord  $attendanceRecord  勤怠情報
-     * @return View
      */
     public function show(
         AttendanceRecord $attendanceRecord
@@ -63,7 +59,6 @@ class AdminAttendanceDetailController extends Controller
         );
     }
 
-
     /**
      * 管理者による勤怠詳細更新処理
      *
@@ -72,10 +67,10 @@ class AdminAttendanceDetailController extends Controller
      *
      * @param  AttendanceCorrectionRequest  $request  リクエスト情報
      * @param  int  $attendanceRecordId  勤怠ID
-     * @return RedirectResponse
      */
     public function update(
-        AttendanceCorrectionRequest $request,int $attendanceRecordId): RedirectResponse {
+        AttendanceCorrectionRequest $request, int $attendanceRecordId): RedirectResponse
+    {
         // 更新対象の勤怠レコードを取得
         $attendanceRecord = AttendanceRecord::findOrFail($attendanceRecordId);
 
@@ -85,7 +80,7 @@ class AdminAttendanceDetailController extends Controller
             'clock_out' => $request->new_clock_out,
         ]);
 
-         // 勤怠一覧画面へリダイレクト
+        // 勤怠一覧画面へリダイレクト
         return redirect('/admin/attendance/list')
             ->with(
                 'success',
