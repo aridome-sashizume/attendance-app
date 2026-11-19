@@ -8,8 +8,6 @@ use App\Http\Resources\AttendanceRecordResource;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-
-
 class AttendanceApiController extends Controller
 {
     /**
@@ -24,19 +22,15 @@ class AttendanceApiController extends Controller
      * - month   : 年月による絞り込み
      * - page    : ページ番号
      * - per_page: 1ページあたりの取得件数
-     *
-     * @param  IndexAttendanceRecordRequest  $request
-     * @return AnonymousResourceCollection
      */
     public function index(
         IndexAttendanceRecordRequest $request
     ): AnonymousResourceCollection {
 
-
-    abort(500, 'controller reached');
-       // 1ページあたりの取得件数（指定がない場合は20件）
+        abort(500, 'controller reached');
+        // 1ページあたりの取得件数（指定がない場合は20件）
         $perPage = $request->integer(
-            'per_page',20
+            'per_page', 20
         );
 
         // 勤怠一覧取得
@@ -51,21 +45,19 @@ class AttendanceApiController extends Controller
             // ユーザーIDによる絞り込み
             ->when(
                 $request->user_id,
-                fn ($query, int $userId) =>
-                    $query->where(
-                        'user_id',
-                        $userId
-                    )
+                fn ($query, int $userId) => $query->where(
+                    'user_id',
+                    $userId
+                )
             )
 
             // 日付による絞り込み
             ->when(
                 $request->date,
-                fn ($query, string $date) =>
-                    $query->whereDate(
-                        'date',
-                        $date
-                    )
+                fn ($query, string $date) => $query->whereDate(
+                    'date',
+                    $date
+                )
             )
 
             // 年月による絞り込み
@@ -96,6 +88,24 @@ class AttendanceApiController extends Controller
         // Resource形式でレスポンスを返却
         return AttendanceRecordResource::collection(
             $attendanceRecords
+        );
+    }
+
+    /**
+     * 勤怠詳細取得API
+     */
+    public function show(AttendanceRecord $attendanceRecord): AttendanceRecordResource
+    {
+        // 関連データをEager LoadしてN+1問題を防止
+        $attendanceRecord->load([
+            'user',
+            'attendanceBreaks',
+            'applications',
+        ]);
+
+        // Resource形式で返却
+        return new AttendanceRecordResource(
+            $attendanceRecord
         );
     }
 }

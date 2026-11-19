@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AttendanceApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Api\V1\AttendanceApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,9 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 // 公開APIのルーティング
-Route::prefix('v1')->group(function () :void{
-
+Route::prefix('v1')->group(function (): void {
     Route::get('/attendance-records', [AttendanceApiController::class, 'index']);
+
+    Route::get('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'show']);
 });
