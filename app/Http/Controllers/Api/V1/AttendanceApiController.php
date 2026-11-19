@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\UpdateAttendanceRecordRequest;
 use App\Http\Resources\AttendanceRecordResource;
 use App\Models\AttendanceRecord;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class AttendanceApiController extends Controller
 {
@@ -174,5 +175,31 @@ class AttendanceApiController extends Controller
         return new AttendanceRecordResource(
             $attendanceRecord
         );
+    }
+
+    /****
+ * 勤怠削除API
+ *
+ * 指定された勤怠情報を削除する。
+ *
+ * 関連する休憩情報および申請情報は
+ * ON DELETE CASCADE により削除される。
+ *
+ * @param AttendanceRecord $attendanceRecord
+ * @return Response
+ */
+    public function destroy(
+        AttendanceRecord $attendanceRecord
+    ): Response {
+
+        // AttendanceRecordPolicy実装後に有効化
+        // $this->authorize(
+        //     'delete',
+        //     $attendanceRecord
+        // );
+
+        $attendanceRecord->delete();
+
+        return response()->noContent();
     }
 }
