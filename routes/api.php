@@ -32,4 +32,6 @@ Route::prefix('v1')->group(function (): void {
     //    });
 
     Route::patch('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'update']);
+
+    Route::delete('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'destroy']);
 });
