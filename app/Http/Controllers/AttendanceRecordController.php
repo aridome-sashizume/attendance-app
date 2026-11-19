@@ -70,7 +70,7 @@ class AttendanceRecordController extends Controller
      * を登録する。
      *
      * @param  Request  $request  リクエスト情報
-     * @Return RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {

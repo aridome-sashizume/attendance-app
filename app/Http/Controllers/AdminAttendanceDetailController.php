@@ -6,6 +6,8 @@ use App\Models\AttendanceRecord;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+use App\Http\Requests\AttendanceCorrectionRequest;
+
 use Illuminate\View\View;
 
 class AdminAttendanceDetailController extends Controller
@@ -65,21 +67,29 @@ class AdminAttendanceDetailController extends Controller
     /**
      * 管理者による勤怠詳細更新処理
      *
-     * 管理者が勤怠詳細画面で承認ステータスを更新する際に呼び出される。
+     * 管理者が勤怠詳細画面で入力した出勤時刻・退勤時刻を
+     * 勤怠レコードへ直接反映する。
      *
-     * @param  Request  $request  リクエスト情報
+     * @param  AttendanceCorrectionRequest  $request  リクエスト情報
      * @param  int  $attendanceRecordId  勤怠ID
      * @return RedirectResponse
      */
-    public function update(Request $request, int $attendanceRecordId): RedirectResponse
-    {
-        // 勤怠レコードを取得
+    public function update(
+        AttendanceCorrectionRequest $request,int $attendanceRecordId): RedirectResponse {
+        // 更新対象の勤怠レコードを取得
         $attendanceRecord = AttendanceRecord::findOrFail($attendanceRecordId);
 
-        // 勤怠レコードの承認ステータスを更新
-        $attendanceRecord->approval_status = $request->input('approval_status');
-        $attendanceRecord->save();
+        // 出勤時刻・退勤時刻を更新
+        $attendanceRecord->update([
+            'clock_in' => $request->new_clock_in,
+            'clock_out' => $request->new_clock_out,
+        ]);
 
-        return redirect()->back()->with('success', '勤怠の承認ステータスが更新されました。');
+         // 勤怠一覧画面へリダイレクト
+        return redirect('/admin/attendance/list')
+            ->with(
+                'success',
+                '勤怠情報を更新しました。'
+            );
     }
 }
