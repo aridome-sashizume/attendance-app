@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\AttendanceRecord;
 use Illuminate\View\View;
+
+
 
 class AttendanceReportController extends Controller
 {
@@ -15,7 +18,22 @@ class AttendanceReportController extends Controller
      */
     public function index(): View
     {
+        $attendanceRecords = AttendanceRecord::query()
+            ->where(
+                'user_id',
+                Auth::id()
+            )
+            ->where(
+                'date',
+                '>=',
+                now()->subMonths(6)->startOfMonth()
+            )
+            ->with('attendanceBreaks')
+            ->orderBy('date')
+            ->get();
+
         return view('reports.index', [
+            'attendanceRecords' => $attendanceRecords,
             'summary' => [
                 'total_work_minutes' => 0,
                 'total_overtime_minutes' => 0,
