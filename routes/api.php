@@ -30,4 +30,6 @@ Route::prefix('v1')->group(function (): void {
 
     Route::post('/attendance-records', [AttendanceApiController::class, 'store']);
     //    });
+
+    Route::patch('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'update']);
 });
