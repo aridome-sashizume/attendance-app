@@ -43,4 +43,14 @@ class AttendanceRecord extends Model
     {
         return $this->hasMany(AttendanceBreak::class);
     }
+
+    /**
+     * 勤怠情報に紐づく修正申請
+     *
+     * この勤怠情報に対して申請された修正申請を取得する。
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
 }
