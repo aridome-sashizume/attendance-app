@@ -15,6 +15,7 @@ class AttendanceReportController extends Controller
      */
     public function index(): View
     {
+        // ログインユーザーの直近6ヶ月分の勤怠情報を取得
         $attendanceRecords = AttendanceRecord::query()
             ->where(
                 'user_id',
@@ -29,9 +30,9 @@ class AttendanceReportController extends Controller
             ->orderBy('date')
             ->get();
 
+        // 日毎の労働時間（分）を算出
         $workMinutesByDay = $attendanceRecords->map(
             function (AttendanceRecord $attendanceRecord): int {
-
                 if (
                     $attendanceRecord->clock_in === null ||
                     $attendanceRecord->clock_out === null
@@ -83,13 +84,132 @@ class AttendanceReportController extends Controller
             )
             : 0;
 
+        // 月別グループ化
+        $groupedAttendanceRecords = $attendanceRecords
+            ->groupBy(
+                fn (AttendanceRecord $attendanceRecord): string => $attendanceRecord->date->format('Y-m')
+            );
+
+        // 直近6ヶ月（当月から5か月前まで）の月一覧
+        $months = collect(range(5, 0))
+            ->map(
+                fn (int $offset): string => now()
+                    ->subMonths($offset)
+                    ->format('Y-m')
+            );
+
+        // 6ヶ月分の月一覧をもとに、月ごとの集計データを作成
+        $monthlyTrend = $months->map(
+            function (
+                string $month
+            ) use (
+                $groupedAttendanceRecords
+            ): array {
+
+                $records = $groupedAttendanceRecords->get(
+                    $month,
+                    collect()
+                );
+
+                $monthlyWorkMinutes = $records->sum(
+                    function (
+                        AttendanceRecord $attendanceRecord
+                    ): int {
+
+                        if (
+                            $attendanceRecord->clock_in === null ||
+                            $attendanceRecord->clock_out === null
+                        ) {
+                            return 0;
+                        }
+
+                        $workMinutes =
+                            $attendanceRecord->clock_in
+                                ->diffInMinutes(
+                                    $attendanceRecord->clock_out
+                                );
+
+                        $breakMinutes =
+                            $attendanceRecord->attendanceBreaks
+                                ->sum(function ($break): int {
+
+                                    if (
+                                        $break->break_in === null ||
+                                        $break->break_out === null
+                                    ) {
+                                        return 0;
+                                    }
+
+                                    return $break->break_in
+                                        ->diffInMinutes(
+                                            $break->break_out
+                                        );
+                                });
+
+                        return $workMinutes - $breakMinutes;
+                    }
+                );
+
+                $monthlyOvertimeMinutes = $records->sum(
+                    function (
+                        AttendanceRecord $attendanceRecord
+                    ): int {
+
+                        if (
+                            $attendanceRecord->clock_in === null ||
+                            $attendanceRecord->clock_out === null
+                        ) {
+                            return 0;
+                        }
+
+                        $workMinutes =
+                            $attendanceRecord->clock_in
+                                ->diffInMinutes(
+                                    $attendanceRecord->clock_out
+                                );
+
+                        $breakMinutes =
+                            $attendanceRecord->attendanceBreaks
+                                ->sum(function ($break): int {
+
+                                    if (
+                                        $break->break_in === null ||
+                                        $break->break_out === null
+                                    ) {
+                                        return 0;
+                                    }
+
+                                    return $break->break_in
+                                        ->diffInMinutes(
+                                            $break->break_out
+                                        );
+                                });
+
+                        $actualWorkMinutes =
+                            $workMinutes - $breakMinutes;
+
+                        return max(
+                            0,
+                            $actualWorkMinutes - 480
+                        );
+                    }
+                );
+
+                return [
+                    'month' => $month,
+                    'work_minutes' => $monthlyWorkMinutes,
+                    'overtime_minutes' => $monthlyOvertimeMinutes,
+                ];
+            }
+        );
+
         return view('reports.index', [
             'summary' => [
                 'total_work_minutes' => $totalWorkMinutes,
                 'total_overtime_minutes' => $totalOvertimeMinutes,
                 'avg_work_minutes' => $avgWorkMinutes,
             ],
-            'monthlyTrend' => [],
+            'monthlyTrend' => $monthlyTrend,
             'anomalies' => [
                 'late_count' => 0,
                 'early_leave_count' => 0,
