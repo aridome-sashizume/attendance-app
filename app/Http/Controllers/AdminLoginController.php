@@ -17,8 +17,6 @@ class AdminLoginController extends Controller
      * 管理者ログイン画面表示
      *
      * 管理者ログイン画面を表示する。
-     * 
-     * @return View
      */
     public function showLoginForm(): View
     {
@@ -31,6 +29,7 @@ class AdminLoginController extends Controller
      * 管理者がログインフォームに入力した情報を検証し、ログイン処理を行う。
      *
      * @param  AdminLoginRequest  $request  リクエスト情報
+     *
      * @Return RedirectResponse
      */
     public function login(AdminLoginRequest $request): RedirectResponse
@@ -61,7 +60,6 @@ class AdminLoginController extends Controller
      * 管理者がログアウトする際に呼び出される。
      *
      * @param  Request  $request  リクエスト情報
-     * @return RedirectResponse
      */
     public function logout(Request $request): RedirectResponse
     {
