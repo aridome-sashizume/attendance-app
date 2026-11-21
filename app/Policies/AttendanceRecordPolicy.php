@@ -8,7 +8,7 @@ use App\Models\User;
 class AttendanceRecordPolicy
 {
     /**
-     * 管理者は全操作を許可
+     * 管理者は全操作を許可する。
      */
     public function before(
         User $user,
@@ -22,7 +22,9 @@ class AttendanceRecordPolicy
     }
 
     /**
-     * 勤怠更新
+     * 勤怠情報の更新権限を判定する。
+     *
+     * 本人の勤怠情報のみ更新を許可する。
      */
     public function update(
         User $user,
@@ -32,7 +34,9 @@ class AttendanceRecordPolicy
     }
 
     /**
-     * 勤怠削除
+     * 勤怠情報の削除権限を判定する。
+     *
+     * 本人の勤怠情報のみ削除を許可する。
      */
     public function delete(
         User $user,

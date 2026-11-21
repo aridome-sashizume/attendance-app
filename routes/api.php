@@ -29,8 +29,10 @@ Route::prefix('v1')->group(function (): void {
     Route::middleware('auth:sanctum')->group(function (): void {
 
         Route::post('/attendance-records', [AttendanceApiController::class, 'store']);
-    
+
         Route::patch('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'update']);
+
+        Route::put('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'update']);
 
         Route::delete('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'destroy']);
     });
