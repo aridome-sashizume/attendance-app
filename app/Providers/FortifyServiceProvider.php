@@ -17,6 +17,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\LogoutResponse;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -28,7 +29,23 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->instance(
+            LogoutResponse::class,
+            new class implements LogoutResponse
+            {
+                /**
+                 * ログアウト後のレスポンス生成
+                 *
+                 * ログアウト完了後はログイン画面へリダイレクトする。
+                 *
+                 * @param  Request  $request  リクエスト情報
+                 */
+                public function toResponse($request)
+                {
+                    return redirect('/login');
+                }
+            }
+        );
     }
 
     /**
