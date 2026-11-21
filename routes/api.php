@@ -26,12 +26,12 @@ Route::prefix('v1')->group(function (): void {
     Route::get('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'show']);
 
     // 　Sanctumでの認証
-    // Route::middleware('auth:sanctum')->group(function (): void {
+    Route::middleware('auth:sanctum')->group(function (): void {
 
-    Route::post('/attendance-records', [AttendanceApiController::class, 'store']);
-    //    });
+        Route::post('/attendance-records', [AttendanceApiController::class, 'store']);
+    
+        Route::patch('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'update']);
 
-    Route::patch('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'update']);
-
-    Route::delete('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'destroy']);
+        Route::delete('/attendance-records/{attendanceRecord}', [AttendanceApiController::class, 'destroy']);
+    });
 });

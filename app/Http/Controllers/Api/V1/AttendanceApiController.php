@@ -154,11 +154,10 @@ class AttendanceApiController extends Controller
         AttendanceRecord $attendanceRecord
     ): AttendanceRecordResource {
 
-        // AttendanceRecordPolicy実装後に有効化
-        // $this->authorize(
-        //     'update',
-        //     $attendanceRecord
-        // );
+        $this->authorize(
+            'update',
+            $attendanceRecord
+        );
 
         // 勤怠情報を更新
         $attendanceRecord->update(
@@ -192,11 +191,10 @@ class AttendanceApiController extends Controller
         AttendanceRecord $attendanceRecord
     ): Response {
 
-        // AttendanceRecordPolicy実装後に有効化
-        // $this->authorize(
-        //     'delete',
-        //     $attendanceRecord
-        // );
+        $this->authorize(
+            'delete',
+            $attendanceRecord
+        );
 
         $attendanceRecord->delete();
 
