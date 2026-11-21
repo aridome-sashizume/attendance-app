@@ -44,20 +44,3 @@ A --> I["修正申請一覧"]
 
 I --> J["申請承認"]
 ```
-
-## 公開API
-
-```mermaid
-flowchart LR
-
-A["Sanctum認証"]
---> B["一覧取得<br>GET"]
-
-B --> C["詳細取得<br>GET /{id}"]
-
-C --> D["登録<br>POST"]
-
-D --> E["更新<br>PUT /{id}"]
-
-E --> F["削除<br>DELETE /{id}"]
-```
