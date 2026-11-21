@@ -52,7 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/stamp_correction_request/list', [ApplicationListController::class, 'index']);
 
-    Route::get('/application/{application}', [ApplicationDetailController::class, 'show']);
+    Route::get('/attendance/detail/{application}',[ApplicationDetailController::class, 'show']);
 });
 
 /**

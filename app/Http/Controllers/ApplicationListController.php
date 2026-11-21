@@ -50,6 +50,8 @@ class ApplicationListController extends Controller
                     // 申請ID
                     'id' => $application->id,
 
+                    // 勤怠ID
+                    'attendance_record_id' => $application->attendance_record_id,
                     // 承認状態（承認待ち・承認済み）
                     'approval_status' => $application->approval_status,
 

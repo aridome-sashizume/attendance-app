@@ -19,14 +19,23 @@ class AttendanceDetailController extends Controller
      *
      * @param  AttendanceRecord  $attendanceRecord  勤怠情報
      */
-    public function show(
-        AttendanceRecord $attendanceRecord
-    ): View {
+    public function show(AttendanceRecord $attendanceRecord): View
+    {
+        $pendingApplication = Application::where(
+            'attendance_record_id',
+            $attendanceRecord->id
+        )
+        ->where(
+            'approval_status',
+            '承認待ち'
+        )
+        ->first();
+
         $attendanceRecord->load('attendanceBreaks');
 
         $data = [
             'id' => $attendanceRecord->id,
-            'application' => null,
+            'application' => $pendingApplication,
             'year' => $attendanceRecord->date->format('Y年'),
             'date' => $attendanceRecord->date->format('n月j日'),
             'clock_in' => optional(
