@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Application;
-use Illuminate\View\View;
-
 use Carbon\Carbon;
+use Illuminate\View\View;
 
 class ApplicationDetailController extends Controller
 {

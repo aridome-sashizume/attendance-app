@@ -25,11 +25,11 @@ class AttendanceDetailController extends Controller
             'attendance_record_id',
             $attendanceRecord->id
         )
-        ->where(
-            'approval_status',
-            '承認待ち'
-        )
-        ->first();
+            ->where(
+                'approval_status',
+                '承認待ち'
+            )
+            ->first();
 
         $attendanceRecord->load('attendanceBreaks');
 

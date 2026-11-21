@@ -31,7 +31,7 @@ class StoreAttendanceRecordRequest extends FormRequest
             ],
             'date' => [
                 'required',
-                'date',
+                'date_format:Y-m-d',
                 Rule::unique('attendance_records')
                     ->where(
                         fn ($query) => $query->where(
@@ -66,7 +66,7 @@ class StoreAttendanceRecordRequest extends FormRequest
     {
         return [
             'date.required' => '勤怠日は必須です。',
-            'date.date' => '勤怠日は YYYY-MM-DD 形式で指定してください。',
+            'date.date_format' => '勤怠日は YYYY-MM-DD 形式で指定してください。',
 
             'clock_in.required' => '出勤時刻は必須です。',
             'clock_in.date_format' => '出勤時刻は HH:MM:SS 形式で指定してください。',

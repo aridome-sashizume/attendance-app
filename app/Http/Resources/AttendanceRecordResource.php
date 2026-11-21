@@ -4,9 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\AttendanceBreakResource;
-use App\Http\Resources\ApplicationResource;
 
 /**
  * 勤怠情報Resource
@@ -31,11 +28,11 @@ class AttendanceRecordResource extends JsonResource
                 $this->whenLoaded('user')
             ),
 
-            'date' => $this->date,
+            'date' => $this->date?->format('Y-m-d'),
 
-            'clock_in' => $this->clock_in,
+            'clock_in' => $this->clock_in?->format('H:i:s'),
 
-            'clock_out' => $this->clock_out,
+            'clock_out' => $this->clock_out?->format('H:i:s'),
 
             'total_time' => $this->total_time,
 
