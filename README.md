@@ -1,10 +1,10 @@
-# アプリケーション名
+<img width="2202" height="2268" alt="image" src="https://github.com/user-attachments/assets/6aa9c20e-d74c-4a8e-b223-af78414d5491" /># アプリケーション名
 勤怠管理アプリ
 
 ## 概要
 Laravel 10 / MySQL / Docker / Laravel Sail を使用した勤怠管理アプリケーションです。
-一般ユーザー向けの勤怠打刻機能（出勤・退勤・休憩）および勤怠修正申請機能、管理者向けの勤怠管理・申請承認機能を実装します。
-また、応用機能としてメール認証、CSVエクスポート、勤怠集計レポート機能、公開APIを実装予定です。
+一般ユーザー向けの勤怠打刻機能（出勤・退勤・休憩）および勤怠修正申請機能、管理者向けの勤怠管理・申請承認機能を実装しています。
+また、メール認証、CSVエクスポート、勤怠集計レポート機能、公開APIを実装しています。
 
 ## 環境構築
 このアプリケーションは Docker / Laravel Sail を使用して動作します。
@@ -74,24 +74,60 @@ Tailwind CSS はすでにプロジェクトに含まれています。
 ```
 
 ### 9.アクセスURLを開く
-- フロント画面
-　http://localhost/
-　※詳細は今後実装時に追記予定
-
+- 一般ユーザー:http://localhost/login
+- 管理ユーザ：http://localhost/admin/login
+    
 ### 実行終了時は、以下のコマンドでSailを終了してください。
 ```bash
 ./vendor/bin/sail down
 ```
+
+## テストユーザー
+
+### 一般ユーザー
+
+| メールアドレス | パスワード |
+|---|---|
+| user1@example.com | password |
+| user2@example.com | password |
+
+### 管理者
+
+| メールアドレス | パスワード |
+|---|---|
+| user3@example.com | password |
+
+## 認可
+- 一般ユーザーは自身の勤怠情報のみ閲覧可能
+- 一般ユーザーは管理者画面へアクセス不可（403 Forbidden）
+- 管理者は全ユーザーの勤怠情報を閲覧・編集可能
+
+## 公開API
+
+### ベースURL
+
+```text
+http://localhost/api/v1
+```
+
+### エンドポイント
+
+| メソッド | URL | 概要 |
+|----------|-----|------|
+| GET | /attendance-records | 勤怠一覧取得 |
+| GET | /attendance-records/{attendanceRecord} | 勤怠詳細取得 |
+| POST | /attendance-records | 勤怠登録 |
+| PUT/PATCH | /attendance-records/{attendanceRecord} | 勤怠更新 |
+| DELETE | /attendance-records/{attendanceRecord} | 勤怠削除 |
 
 ## ER図
 ```mermaid
 erDiagram
   users ||--o{ attendance_records : ""
   users ||--o{ applications : ""
-  attendance_records ||--o{ breaks : ""
   attendance_records ||--o{ applications : ""
   applications ||--o{ application_breaks : ""
-
+  attendance_records ||--o{ attendance_breaks : ""
   users {
     bigint id PK
     string name
@@ -114,7 +150,7 @@ erDiagram
     timestamp updated_at
   }
 
-  breaks {
+  attendance_breaks {
     bigint id PK
     bigint attendance_record_id FK
     time break_in
@@ -147,7 +183,9 @@ erDiagram
 ```
 
 ## URL
-- アプリ開発環境：http://localhost
+- アプリ開発環境
+    - 一般ユーザー:http://localhost/login
+    - 管理ユーザ：http://localhost/admin/login
 - phpMyAdmin: http://localhost:8080
 - Mailpit: http://localhost:8025
 
