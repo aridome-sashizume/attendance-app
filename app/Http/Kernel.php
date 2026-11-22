@@ -26,6 +26,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Http\Middleware\AdminMiddleware;
 
 class Kernel extends HttpKernel
 {
@@ -87,5 +88,8 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
+
+        // 管理者権限を持つユーザーのみアクセスを許可
+        'admin' => AdminMiddleware::class,
     ];
 }

@@ -44,4 +44,16 @@ class AttendanceRecordPolicy
     ): bool {
         return $user->id === $attendanceRecord->user_id;
     }
+
+    /**
+     * 勤怠情報の閲覧権限を判定する。
+     *
+     * 本人の勤怠情報のみ閲覧を許可する。
+     */
+    public function view(
+        User $user,
+        AttendanceRecord $attendanceRecord
+    ): bool {
+        return $user->id === $attendanceRecord->user_id;
+    }
 }

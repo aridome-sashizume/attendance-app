@@ -58,7 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 /**
  *  管理者のログイン後のルート
  */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','admin'])->group(function () {
 
     Route::get('/admin/attendance/list', [AdminAttendanceListController::class, 'index']);
 
@@ -75,4 +75,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminApplicationDetailController::class, 'update']);
 
     Route::post('/export', [StaffAttendanceController::class, 'exportCsv']);
+
+    
+});
+
+
+Route::middleware('admin')->get('/admin-test', function () {
+    return 'OK';
 });
