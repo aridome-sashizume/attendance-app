@@ -21,6 +21,17 @@ class AttendanceDetailController extends Controller
      */
     public function show(AttendanceRecord $attendanceRecord): View
     {
+        /**
+         * 対象勤怠の閲覧権限を確認する。
+         *
+         * 一般ユーザーは本人の勤怠情報のみ閲覧可能とし、
+         * 他ユーザーの勤怠情報へのアクセスを禁止する。
+         */
+        $this->authorize(
+            'view',
+            $attendanceRecord
+        );
+
         $pendingApplication = Application::where(
             'attendance_record_id',
             $attendanceRecord->id
