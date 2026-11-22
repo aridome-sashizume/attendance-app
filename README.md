@@ -1,4 +1,4 @@
-<img width="2202" height="2268" alt="image" src="https://github.com/user-attachments/assets/6aa9c20e-d74c-4a8e-b223-af78414d5491" /># アプリケーション名
+# アプリケーション名
 勤怠管理アプリ
 
 ## 概要
