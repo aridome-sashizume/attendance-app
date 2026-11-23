@@ -75,7 +75,7 @@ class EmailVerificationFeatureTest extends TestCase
     /**
      * 不正な認証URLではメール認証できない
      */
-    public function test_不正な認証URLではメール認証できない(): void
+    public function test_不正な認証_ur_lではメール認証できない(): void
     {
         $user = User::factory()->create([
             'email_verified_at' => null,

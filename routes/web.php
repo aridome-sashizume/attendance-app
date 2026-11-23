@@ -58,7 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 /**
  *  管理者のログイン後のルート
  */
-Route::middleware(['auth','admin'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/attendance/list', [AdminAttendanceListController::class, 'index']);
 
@@ -76,9 +76,7 @@ Route::middleware(['auth','admin'])->group(function () {
 
     Route::post('/export', [StaffAttendanceController::class, 'exportCsv']);
 
-    
 });
-
 
 Route::middleware('admin')->get('/admin-test', function () {
     return 'OK';
