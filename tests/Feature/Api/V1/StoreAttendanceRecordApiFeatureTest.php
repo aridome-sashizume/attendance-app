@@ -17,7 +17,7 @@ class StoreAttendanceRecordApiFeatureTest extends TestCase
      * 認証済みユーザーが有効なパラメータでリクエストした場合、
      * 勤怠情報を登録できることを確認する。
      */
-    public function test_勤怠登録APIで勤怠情報を登録できる(): void
+    public function test_勤怠登録_ap_iで勤怠情報を登録できる(): void
     {
         // 認証ユーザー作成
         $user = User::factory()->create();
@@ -81,6 +81,12 @@ class StoreAttendanceRecordApiFeatureTest extends TestCase
             'user_id',
             'date',
         ]);
+
+        // 日本語メッセージを確認
+        $response->assertJsonPath(
+            'errors.date.0',
+            '勤怠日は必須です。'
+        );
     }
 
     /**
@@ -115,6 +121,12 @@ class StoreAttendanceRecordApiFeatureTest extends TestCase
         $response->assertJsonValidationErrors([
             'date',
         ]);
+
+        // 日本語メッセージを確認
+        $response->assertJsonPath(
+            'errors.date.0',
+            '勤怠日は YYYY-MM-DD 形式で指定してください。'
+        );
     }
 
     /**

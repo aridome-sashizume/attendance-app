@@ -34,7 +34,6 @@ class ShowAttendanceRecordApiFeatureTest extends TestCase
 
         // レスポンス成功を確認
         $response->assertOk();
-
         // JSONレスポンス構造を確認
         $response->assertJsonStructure([
             'data' => [
@@ -51,6 +50,7 @@ class ShowAttendanceRecordApiFeatureTest extends TestCase
                 'total_break_time',
                 'comment',
                 'breaks',
+                'applications',
             ],
         ]);
     }
