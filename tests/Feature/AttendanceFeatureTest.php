@@ -221,4 +221,146 @@ class AttendanceFeatureTest extends TestCase
             false
         );
     }
+
+    /**
+     * 退勤済みユーザーには出勤ボタンが表示されないことを確認する。
+     */
+    public function test_退勤済の場合は出勤ボタンが表示されない(): void
+    {
+        $user = User::factory()->create();
+
+        AttendanceRecord::factory()->create([
+            'user_id' => $user->id,
+            'date' => today(),
+            'clock_in' => now()->subHours(8),
+            'clock_out' => now(),
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/attendance');
+
+        $response->assertOk();
+
+        $response->assertDontSee('出勤');
+        $response->assertSee('退勤済');
+    }
+
+    /**
+     * 出勤時刻が勤怠一覧画面に表示されることを確認する。
+     */
+    public function test_出勤時刻が勤怠一覧画面に表示される(): void
+    {
+        $user = User::factory()->create();
+
+        AttendanceRecord::factory()->create([
+            'user_id' => $user->id,
+            'date' => today(),
+            'clock_in' => '09:00:00',
+            'clock_out' => null,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/attendance/list');
+
+        $response->assertOk();
+        $response->assertSee('09:00');
+    }
+
+    /**
+     * 休憩を複数回取得できることを確認する。
+     */
+    public function test_休憩を複数回取得できる(): void
+    {
+        $user = User::factory()->create();
+
+        $attendance = AttendanceRecord::factory()->create([
+            'user_id' => $user->id,
+            'date' => today(),
+            'clock_out' => null,
+        ]);
+
+        AttendanceBreak::factory()->create([
+            'attendance_record_id' => $attendance->id,
+            'break_in' => now()->subHours(2),
+            'break_out' => now()->subHours(1),
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/attendance');
+
+        $response->assertOk();
+        $response->assertSee('休憩入');
+    }
+
+    /**
+     * 休憩戻を複数回実行できることを確認する。
+     */
+    public function test_休憩戻を複数回実行できる(): void
+    {
+        $user = User::factory()->create();
+
+        $attendance = AttendanceRecord::factory()->create([
+            'user_id' => $user->id,
+            'date' => today(),
+            'clock_out' => null,
+        ]);
+
+        AttendanceBreak::factory()->create([
+            'attendance_record_id' => $attendance->id,
+            'break_in' => now(),
+            'break_out' => null,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/attendance');
+
+        $response->assertOk();
+        $response->assertSee('休憩戻');
+    }
+
+    /**
+     * 休憩時刻が勤怠一覧画面に表示されることを確認する。
+     */
+    public function test_休憩時刻が勤怠一覧画面に表示される(): void
+    {
+        $user = User::factory()->create();
+
+        $attendance = AttendanceRecord::factory()->create([
+            'user_id' => $user->id,
+            'date' => today(),
+        ]);
+
+        AttendanceBreak::factory()->create([
+            'attendance_record_id' => $attendance->id,
+            'break_in' => '12:00:00',
+            'break_out' => '13:00:00',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/attendance/list');
+
+        $response->assertOk();
+        $response->assertSee('1:00');
+    }
+
+    /**
+     * 退勤時刻が勤怠一覧画面に表示されることを確認する。
+     */
+    public function test_退勤時刻が勤怠一覧画面に表示される(): void
+    {
+        $user = User::factory()->create();
+
+        AttendanceRecord::factory()->create([
+            'user_id' => $user->id,
+            'date' => today(),
+            'clock_in' => '09:00:00',
+            'clock_out' => '18:00:00',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/attendance/list');
+
+        $response->assertOk();
+        $response->assertSee('18:00');
+    }
 }
