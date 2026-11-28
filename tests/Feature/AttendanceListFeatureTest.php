@@ -113,7 +113,7 @@ class AttendanceListFeatureTest extends TestCase
         $response->assertSee('詳細');
 
         $response->assertSee(
-            '/attendance/' . $attendance->id,
+            '/attendance/'.$attendance->id,
             false
         );
     }
