@@ -433,4 +433,19 @@ class AdminFeatureTest extends TestCase
             'comment' => '備考を記入してください',
         ]);
     }
+
+    /**
+     * 一般ユーザーは管理者画面へアクセスできないことを確認する。
+     */
+    public function test_一般ユーザーは管理者画面へアクセスできない(): void
+    {
+        $user = User::factory()->create([
+            'admin_status' => false,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/admin/staff/list');
+
+        $response->assertForbidden();
+    }
 }
